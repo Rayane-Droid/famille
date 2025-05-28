@@ -104,11 +104,6 @@
       box-shadow: 0 0 6px rgba(52, 152, 219, 0.6);
     }
   </style>
-
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js"></script>
-
-  
 </head>
 <body>
   <div id="language-selection">
@@ -706,7 +701,6 @@
       });
     }
 
-//enregistrer sur pdf ================================= debut ================================================
     function saveToPDF() {
       const t = translations[currentLanguage];
       const rows = document.querySelectorAll("#property-body tr");
@@ -790,20 +784,7 @@
       doc.setFont("helvetica", "italic");
       doc.text(t.purchaseProcedureTitle, 14, lastY - 3);
       doc.text(splitText, 14, lastY + 5);
-//enregistrer sur pdf ================================= fin ================================================
 
-//l'enregistrement dans Firebase debut ================================= debut =============================
-      const savedData = {
-  nom: nomUtilisateur,
-  telephone: telephoneUtilisateur,
-  date: dateStr,
-  offre: bodyData  // tableau de [bien, prix, choix]
-};
-
-database.ref("offres").push(savedData);
-
-      //l'enregistrement dans Firebase fin
-      
       doc.save(filename);
 
       alert(`${t.pdfSaved} ${filename}`);
@@ -814,41 +795,5 @@ database.ref("offres").push(savedData);
       document.getElementById("language-selection").classList.remove("hidden");
     });
   </script>
-
-  <script>
-    // Configuration Firebase (depuis ton projet)
-    const firebaseConfig = {
-      apiKey: "AIzaSyBw7Jl0JfEIrwEO-XeJdBBRLc...",
-      authDomain: "botbd-d13b0.firebaseapp.com",
-      databaseURL: "https://botbd-d13b0-default-rtdb.firebaseio.com",
-      projectId: "botbd-d13b0",
-      storageBucket: "botbd-d13b0.appspot.com",
-      messagingSenderId: "313161565166",
-      appId: "1:313161565166:web:a7a5a4e050f5afbcd8c4ff"
-    };
-
-    // Initialisation Firebase
-    const app = firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
-
-    // Fonction pour envoyer la question
-    function sendToFirebase() {
-      const question = document.getElementById("userInput").value;
-      if (question.trim() === "") {
-        alert("Veuillez entrer une question.");
-        return;
-      }
-
-      // Envoie dans la Realtime Database
-      database.ref("questions").push({
-        question: question,
-        timestamp: Date.now()
-      });
-
-      alert("Question envoyée !");
-      document.getElementById("userInput").value = "";
-    }
-  </script>
-//l'enregistrement dans Firebase debut ================================= fin =============================
 </body>
 </html>
