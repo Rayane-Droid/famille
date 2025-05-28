@@ -1,0 +1,801 @@
+
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Vente de Biens</title>
+  <style>
+    .language-menu {
+      margin: 15px 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .language-menu label {
+      font-weight: 600;
+      margin-right: 10px;
+      font-size: 1.1em;
+      color: #34495e;
+    }
+    .language-menu select {
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1.8px solid #2980b9;
+      background-color: #f0f8ff;
+      font-size: 1em;
+      color: #2c3e50;
+      cursor: pointer;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .language-menu select:hover,
+    .language-menu select:focus {
+      border-color: #3498db;
+      box-shadow: 0 0 8px rgba(52, 152, 219, 0.6);
+      outline: none;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f4f4f9;
+      color: #333;
+    }
+    h2 {
+      color: #444;
+    }
+    .hidden {
+      display: none;
+    }
+    .btn {
+      padding: 8px 16px;
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      margin-right: 5px;
+      font-weight: 600;
+      transition: background-color 0.3s ease;
+    }
+    .btn:hover {
+      background-color: #45a049;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background: white;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 12px 10px;
+      text-align: center;
+      font-size: 0.95em;
+    }
+    th {
+      background-color: #2980b9;
+      color: #fff;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .input-block {
+      margin-bottom: 20px;
+    }
+    .input-block label {
+      font-weight: 600;
+      display: block;
+      margin-bottom: 6px;
+      font-size: 1.1em;
+      color: #34495e;
+    }
+    .input-block input {
+      padding: 8px 10px;
+      width: 100%;
+      max-width: 350px;
+      border-radius: 6px;
+      border: 1.5px solid #2980b9;
+      font-size: 1em;
+      transition: border-color 0.3s ease;
+    }
+    .input-block input:focus {
+      border-color: #3498db;
+      outline: none;
+      box-shadow: 0 0 6px rgba(52, 152, 219, 0.6);
+    }
+  </style>
+</head>
+<body>
+  <div id="language-selection">
+    <h2 id="language-prompt">
+      🇲🇦 اختر لغتك :<br />
+      🇫🇷 Choisissez votre langue :<br />
+      🇺🇸 Choose your language:<br />
+      🇪🇸 Elija su idioma:<br />
+      🇩🇪 Wählen Sie Ihre Sprache:<br />
+      🇮🇹 Scegli la tua lingua:
+    </h2>
+    <div class="language-menu">
+      <select id="language" onchange="selectLanguage()">
+        <option value="">--</option>
+        <option value="fr">Français</option>
+        <option value="ar">العربية</option>
+        <option value="en">Anglais</option>
+        <option value="es">Espagnol</option>
+        <option value="de">Allemand</option>
+        <option value="it">Italien</option>
+      </select>
+    </div>
+  </div>
+
+  <div id="user-form" class="hidden" aria-live="polite" aria-label="Formulaire utilisateur">
+    <h2 id="welcome-message">Bienvenue !</h2>
+    <div class="input-block">
+      <label id="label-username" for="username">Nom d'utilisateur :</label>
+      <input type="text" id="username" aria-required="true" />
+    </div>
+    <div class="input-block">
+      <label id="label-phone" for="phone">Numéro de téléphone :</label>
+      <input type="text" id="phone" aria-required="true" />
+    </div>
+    <button class="btn" id="btn-continue" onclick="submitUserInfo()">Continuer</button>
+  </div>
+
+  <div id="content" class="hidden" aria-live="polite" aria-label="Liste des biens disponibles">
+    <button class="btn" onclick="resetApp()" id="btn-back">Retour au menu des langues</button>
+    <h2 id="property-title">Nos biens disponibles :</h2>
+    <table id="property-table" role="table" aria-describedby="property-title">
+      <thead>
+        <tr>
+          <th scope="col">N°</th>
+          <th scope="col">Bien</th>
+          <th scope="col">Titre</th>
+          <th scope="col">Description</th>
+          <th scope="col">Superficie</th>
+          <th scope="col">Prix</th>
+          <th scope="col">Photo</th>
+          <th scope="col">Vidéo</th>
+          <th scope="col">Valider</th>
+          <th scope="col">Proposition</th>
+          <th scope="col">Annuler</th>
+        </tr>
+      </thead>
+      <tbody id="property-body"></tbody>
+    </table>
+    <br />
+    <button class="btn" onclick="saveToPDF()" id="btn-save">Enregistrer en PDF</button>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+  <script>
+    const properties = [
+      {
+        key: "villa",
+        photo: "https://exemple.com/villa-photo.jpg",
+        video: "https://exemple.com/villa-video.mp4",
+        titles: {
+          fr: "Belle Villa moderne",
+          en: "Beautiful Modern Villa",
+          ar: "فيلا جميلة وحديثة",
+          es: "Hermosa villa moderna",
+          de: "Schöne moderne Villa",
+          it: "Bella villa moderna"
+        },
+        descriptions: {
+          fr: "Grande villa avec piscine et jardin.",
+          en: "Large villa with pool and garden.",
+          ar: "فيلا كبيرة مع مسبح وحديقة.",
+          es: "Amplia villa con piscina y jardín.",
+          de: "Große Villa mit Pool und Garten.",
+          it: "Grande villa con piscina e giardino."
+        },
+        areas: {
+          fr: "350 m²",
+          en: "350 sqm",
+          ar: "٣٥٠ متر مربع",
+          es: "350 m²",
+          de: "350 m²",
+          it: "350 m²"
+        },
+        prices: {
+          fr: "3 000 000 DH",
+          en: "3,000,000 DH",
+          ar: "٣٬٠٠٠٬٠٠٠ درهم",
+          es: "3.000.000 DH",
+          de: "3.000.000 DH",
+          it: "3.000.000 DH"
+        }
+      },
+      {
+        key: "garage",
+        photo: "https://exemple.com/garage-photo.jpg",
+        video: "https://exemple.com/garage-video.mp4",
+        titles: {
+          fr: "Garage sécurisé",
+          en: "Secure Garage",
+          ar: "كراج آمن",
+          es: "Garaje seguro",
+          de: "Sichere Garage",
+          it: "Garage sicuro"
+        },
+        descriptions: {
+          fr: "Garage spacieux avec système de sécurité.",
+          en: "Spacious garage with security system.",
+          ar: "كراج واسع مع نظام أمني.",
+          es: "Garaje espacioso con sistema de seguridad.",
+          de: "Geräumige Garage mit Sicherheitssystem.",
+          it: "Garage spazioso con sistema di sicurezza."
+        },
+        areas: {
+          fr: "50 m²",
+          en: "50 sqm",
+          ar: "٥٠ متر مربع",
+          es: "50 m²",
+          de: "50 m²",
+          it: "50 m²"
+        },
+        prices: {
+          fr: "500 000 DH",
+          en: "500,000 DH",
+          ar: "٥٠٠٬٠٠٠ درهم",
+          es: "500.000 DH",
+          de: "500.000 DH",
+          it: "500.000 DH"
+        }
+      },
+      {
+        key: "terrain1",
+        photo: "https://exemple.com/terrain1-photo.jpg",
+        video: "https://exemple.com/terrain1-video.mp4",
+        titles: {
+          fr: "Terrain agricole fertile",
+          en: "Fertile Agricultural Land",
+          ar: "أرض زراعية خصبة",
+          es: "Terreno agrícola fértil",
+          de: "Fruchtbares Ackerland",
+          it: "Terreno agricolo fertile"
+        },
+        descriptions: {
+          fr: "Terrain idéal pour la culture, bien irrigué.",
+          en: "Ideal land for farming, well irrigated.",
+          ar: "أرض مثالية للزراعة، مزودة بالري الجيد.",
+          es: "Terreno ideal para cultivo, bien irrigado.",
+          de: "Ideal für Landwirtschaft, gut bewässert.",
+          it: "Terreno ideale per l'agricoltura, ben irrigato."
+        },
+        areas: {
+          fr: "1000 m²",
+          en: "1000 sqm",
+          ar: "١٠٠٠ متر مربع",
+          es: "1000 m²",
+          de: "1000 m²",
+          it: "1000 m²"
+        },
+        prices: {
+          fr: "800 000 DH",
+          en: "800,000 DH",
+          ar: "٨٠٠٬٠٠٠ درهم",
+          es: "800.000 DH",
+          de: "800.000 DH",
+          it: "800.000 DH"
+        }
+      },
+      {
+        key: "terrain2",
+        photo: "https://exemple.com/terrain2-photo.jpg",
+        video: "https://exemple.com/terrain2-video.mp4",
+        titles: {
+          fr: "Terrain constructible",
+          en: "Buildable Land",
+          ar: "أرض قابلة للبناء",
+          es: "Terreno urbanizable",
+          de: "Bebaubarer Land",
+          it: "Terreno edificabile"
+        },
+        descriptions: {
+          fr: "Terrain plat prêt pour construction résidentielle.",
+          en: "Flat land ready for residential building.",
+          ar: "أرض مستوية جاهزة للبناء السكني.",
+          es: "Terreno plano listo para construcción residencial.",
+          de: "Flaches Land bereit für Wohnbebauung.",
+          it: "Terreno pianeggiante pronto per costruzione residenziale."
+        },
+        areas: {
+          fr: "750 m²",
+          en: "750 sqm",
+          ar: "٧٥٠ متر مربع",
+          es: "750 m²",
+          de: "750 m²",
+          it: "750 m²"
+        },
+        prices: {
+          fr: "1 200 000 DH",
+          en: "1,200,000 DH",
+          ar: "١٬٢٠٠٬٠٠٠ درهم",
+          es: "1.200.000 DH",
+          de: "1.200.000 DH",
+          it: "1.200.000 DH"
+        }
+      },
+      {
+        key: "terrain3",
+        photo: "https://exemple.com/terrain3-photo.jpg",
+        video: "https://exemple.com/terrain3-video.mp4",
+        titles: {
+          fr: "Terrain commercial",
+          en: "Commercial Land",
+          ar: "أرض تجارية",
+          es: "Terreno comercial",
+          de: "Gewerbegrundstück",
+          it: "Terreno commerciale"
+        },
+        descriptions: {
+          fr: "Terrain situé en zone commerciale dynamique.",
+          en: "Land located in a dynamic commercial area.",
+          ar: "أرض تقع في منطقة تجارية نشطة.",
+          es: "Terreno ubicado en una zona comercial dinámica.",
+          de: "Grundstück in dynamischem Gewerbegebiet gelegen.",
+          it: "Terreno situato in una zona commerciale dinamica."
+        },
+        areas: {
+          fr: "500 m²",
+          en: "500 sqm",
+          ar: "٥٠٠ متر مربع",
+          es: "500 m²",
+          de: "500 m²",
+          it: "500 m²"
+        },
+        prices: {
+          fr: "2 000 000 DH",
+          en: "2,000,000 DH",
+          ar: "٢٬٠٠٠٬٠٠٠ درهم",
+          es: "2.000.000 DH",
+          de: "2.000.000 DH",
+          it: "2.000.000 DH"
+        }
+      }
+    ];
+
+    let currentLanguage = "fr";
+
+    const translations = {
+      fr: {
+        selectLanguage: "Choisissez votre langue :",
+        welcome: "Bienvenue !",
+        username: "Nom d'utilisateur :",
+        phone: "Numéro de téléphone :",
+        continue: "Continuer",
+        back: "Retour au menu des langues",
+        propertyTitle: "Nos biens disponibles :",
+        save: "Enregistrer en PDF",
+        tableHeaders: ["N°", "Bien", "Titre", "Description", "Superficie", "Prix", "Photo", "Vidéo", "Valider", "Proposition", "Annuler"],
+        validate: "Valider",
+        propose: "Proposer",
+        cancel: "Annuler",
+        noDesire: "Bien non désiré",
+        fillAll: "Veuillez remplir tous les champs.",
+        invalidPhone: "Numéro de téléphone invalide.",
+        invalidPrice: "Prix invalide.",
+        actionRequired: "Veuillez sélectionner une action pour chaque bien.",
+        pdfSaved: "PDF enregistré sous le nom :",
+        purchaseProcedureTitle: "Procédure d'achat :",
+        purchaseProcedure:
+          "1. Vérifiez les biens et les choix dans le tableau.\n" +
+          "2. Contactez notre service commercial au numéro indiqué.\n" +
+          "3. Un conseiller vous accompagnera pour finaliser la transaction.\n" +
+          "4. Vous recevrez une confirmation par email avec les détails.\n" +
+          "Merci de votre confiance.",
+        summaryTitle: "Résumé des choix",
+        nameLabel: "Nom :",
+        phoneLabel: "Téléphone :",
+        dateLabel: "Date de saisie :",
+        photoText: "Photo",
+        videoText: "Vidéo"
+      },
+      en: {
+        selectLanguage: "Choose your language:",
+        welcome: "Welcome!",
+        username: "Username:",
+        phone: "Phone number:",
+        continue: "Continue",
+        back: "Back to language menu",
+        propertyTitle: "Available properties:",
+        save: "Save as PDF",
+        tableHeaders: ["No.", "Property", "Title", "Description", "Area", "Price", "Photo", "Video", "Validate", "Proposal", "Cancel"],
+        validate: "Validate",
+        propose: "Propose",
+        cancel: "Cancel",
+        noDesire: "Not interested",
+        fillAll: "Please fill all fields.",
+        invalidPhone: "Invalid phone number.",
+        invalidPrice: "Invalid price.",
+        actionRequired: "Please select an action for each property.",
+        pdfSaved: "PDF saved as:",
+        purchaseProcedureTitle: "Purchase procedure:",
+        purchaseProcedure:
+          "1. Check the properties and selections in the table.\n" +
+          "2. Contact our sales department at the indicated number.\n" +
+          "3. A consultant will assist you in finalizing the transaction.\n" +
+          "4. You will receive a confirmation email with details.\n" +
+          "Thank you for your trust.",
+        summaryTitle: "Summary of selections",
+        nameLabel: "Name:",
+        phoneLabel: "Phone:",
+        dateLabel: "Entry date:",
+        photoText: "Photo",
+        videoText: "Video"
+      },
+      ar: {
+        selectLanguage: "اختر لغتك:",
+        welcome: "مرحبا!",
+        username: "اسم المستخدم:",
+        phone: "رقم الهاتف:",
+        continue: "استمرار",
+        back: "العودة إلى قائمة اللغات",
+        propertyTitle: "العقارات المتاحة:",
+        save: "حفظ كملف PDF",
+        tableHeaders: ["رقم", "العقار", "العنوان", "الوصف", "المساحة", "السعر", "صورة", "فيديو", "تأكيد", "اقتراح", "إلغاء"],
+        validate: "تأكيد",
+        propose: "اقتراح",
+        cancel: "إلغاء",
+        noDesire: "غير مهتم",
+        fillAll: "يرجى ملء جميع الحقول.",
+        invalidPhone: "رقم الهاتف غير صالح.",
+        invalidPrice: "سعر غير صالح.",
+        actionRequired: "يرجى اختيار إجراء لكل عقار.",
+        pdfSaved: "تم حفظ ملف PDF باسم:",
+        purchaseProcedureTitle: "إجراءات الشراء:",
+        purchaseProcedure:
+          "1. تحقق من العقارات والاختيارات في الجدول.\n" +
+          "2. اتصل بقسم المبيعات لدينا على الرقم المذكور.\n" +
+          "3. سيقوم المستشار بمساعدتك لإتمام المعاملة.\n" +
+          "4. ستتلقى رسالة تأكيد عبر البريد الإلكتروني مع التفاصيل.\n" +
+          "شكراً لثقتك.",
+        summaryTitle: "ملخص الاختيارات",
+        nameLabel: "الاسم:",
+        phoneLabel: "الهاتف:",
+        dateLabel: "تاريخ الإدخال:",
+        photoText: "صورة",
+        videoText: "فيديو"
+      },
+      es: {
+        selectLanguage: "Elija su idioma:",
+        welcome: "¡Bienvenido!",
+        username: "Nombre de usuario:",
+        phone: "Número de teléfono:",
+        continue: "Continuar",
+        back: "Volver al menú de idiomas",
+        propertyTitle: "Propiedades disponibles:",
+        save: "Guardar como PDF",
+        tableHeaders: ["N°", "Propiedad", "Título", "Descripción", "Superficie", "Precio", "Foto", "Vídeo", "Validar", "Propuesta", "Cancelar"],
+        validate: "Validar",
+        propose: "Proponer",
+        cancel: "Cancelar",
+        noDesire: "No interesado",
+        fillAll: "Por favor, complete todos los campos.",
+        invalidPhone: "Número de teléfono inválido.",
+        invalidPrice: "Precio inválido.",
+        actionRequired: "Por favor, seleccione una acción para cada propiedad.",
+        pdfSaved: "PDF guardado como:",
+        purchaseProcedureTitle: "Procedimiento de compra:",
+        purchaseProcedure:
+          "1. Verifique las propiedades y selecciones en la tabla.\n" +
+          "2. Contacte a nuestro departamento de ventas al número indicado.\n" +
+          "3. Un asesor le ayudará a finalizar la transacción.\n" +
+          "4. Recibirá un correo electrónico de confirmación con los detalles.\n" +
+          "Gracias por su confianza.",
+        summaryTitle: "Resumen de selecciones",
+        nameLabel: "Nombre:",
+        phoneLabel: "Teléfono:",
+        dateLabel: "Fecha de ingreso:",
+        photoText: "Foto",
+        videoText: "Vídeo"
+      },
+      de: {
+        selectLanguage: "Wählen Sie Ihre Sprache:",
+        welcome: "Willkommen!",
+        username: "Benutzername:",
+        phone: "Telefonnummer:",
+        continue: "Weiter",
+        back: "Zurück zum Sprachmenü",
+        propertyTitle: "Verfügbare Immobilien:",
+        save: "Als PDF speichern",
+        tableHeaders: ["Nr.", "Immobilie", "Titel", "Beschreibung", "Fläche", "Preis", "Foto", "Video", "Bestätigen", "Vorschlag", "Stornieren"],
+        validate: "Bestätigen",
+        propose: "Vorschlagen",
+        cancel: "Stornieren",
+        noDesire: "Nicht interessiert",
+        fillAll: "Bitte alle Felder ausfüllen.",
+        invalidPhone: "Ungültige Telefonnummer.",
+        invalidPrice: "Ungültiger Preis.",
+        actionRequired: "Bitte wählen Sie eine Aktion für jede Immobilie aus.",
+        pdfSaved: "PDF gespeichert als:",
+        purchaseProcedureTitle: "Kaufverfahren:",
+        purchaseProcedure:
+          "1. Überprüfen Sie die Immobilien und Auswahlen in der Tabelle.\n" +
+          "2. Kontaktieren Sie unsere Verkaufsabteilung unter der angegebenen Nummer.\n" +
+          "3. Ein Berater unterstützt Sie bei der Finalisierung der Transaktion.\n" +
+          "4. Sie erhalten eine Bestätigungs-E-Mail mit Details.\n" +
+          "Vielen Dank für Ihr Vertrauen.",
+        summaryTitle: "Zusammenfassung der Auswahl",
+        nameLabel: "Name:",
+        phoneLabel: "Telefon:",
+        dateLabel: "Eingabedatum:",
+        photoText: "Foto",
+        videoText: "Video"
+      },
+      it: {
+        selectLanguage: "Scegli la tua lingua:",
+        welcome: "Benvenuto!",
+        username: "Nome utente:",
+        phone: "Numero di telefono:",
+        continue: "Continua",
+        back: "Torna al menu lingue",
+        propertyTitle: "Immobili disponibili:",
+        save: "Salva come PDF",
+        tableHeaders: ["N°", "Immobile", "Titolo", "Descrizione", "Superficie", "Prezzo", "Foto", "Video", "Conferma", "Proposta", "Annulla"],
+        validate: "Conferma",
+        propose: "Proponi",
+        cancel: "Annulla",
+        noDesire: "Non interessato",
+        fillAll: "Per favore compila tutti i campi.",
+        invalidPhone: "Numero di telefono non valido.",
+        invalidPrice: "Prezzo non valido.",
+        actionRequired: "Seleziona un'azione per ogni immobile.",
+        pdfSaved: "PDF salvato come:",
+        purchaseProcedureTitle: "Procedura di acquisto:",
+        purchaseProcedure:
+          "1. Controlla le proprietà e le scelte nella tabella.\n" +
+          "2. Contatta il nostro servizio commerciale al numero indicato.\n" +
+          "3. Un consulente ti accompagnerà per finalizzare la transazione.\n" +
+          "4. Riceverai una conferma via email con i dettagli.\n" +
+          "Grazie per la tua fiducia.",
+        summaryTitle: "Riepilogo delle scelte",
+        nameLabel: "Nome:",
+        phoneLabel: "Telefono:",
+        dateLabel: "Data di inserimento:",
+        photoText: "Foto",
+        videoText: "Video"
+      }
+    };
+
+    function selectLanguage() {
+      const lang = document.getElementById("language").value;
+      if (!lang) return;
+      currentLanguage = lang;
+      const t = translations[lang];
+
+      // Met à jour les éléments visibles et textes
+      document.getElementById("language-selection").classList.add("hidden");
+      document.getElementById("user-form").classList.remove("hidden");
+      document.getElementById("welcome-message").innerText = t.welcome;
+      document.getElementById("label-username").innerText = t.username;
+      document.getElementById("label-phone").innerText = t.phone;
+      document.getElementById("btn-continue").innerText = t.continue;
+      document.getElementById("btn-back").innerText = t.back;
+      document.getElementById("property-title").innerText = t.propertyTitle;
+      document.getElementById("btn-save").innerText = t.save;
+
+      // Met à jour les en-têtes du tableau
+      const tableHeaders = document.querySelectorAll("#property-table th");
+      t.tableHeaders.forEach((header, index) => {
+        tableHeaders[index].innerText = header;
+      });
+    }
+
+    function submitUserInfo() {
+      const t = translations[currentLanguage];
+      const username = document.getElementById("username").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+
+      if (!username || !phone) {
+        alert(t.fillAll);
+        return;
+      }
+      const phoneRegex = /^\+?\d{8,15}$/;
+      if (!phoneRegex.test(phone)) {
+        alert(t.invalidPhone);
+        return;
+      }
+      document.getElementById("user-form").classList.add("hidden");
+      document.getElementById("content").classList.remove("hidden");
+      generatePropertyTable();
+    }
+
+    function resetApp() {
+      currentLanguage = "fr";
+      document.getElementById("language-selection").classList.remove("hidden");
+      document.getElementById("user-form").classList.add("hidden");
+      document.getElementById("content").classList.add("hidden");
+      document.getElementById("language").value = "";
+      document.getElementById("username").value = "";
+      document.getElementById("phone").value = "";
+      document.getElementById("property-body").innerHTML = "";
+    }
+
+    function generatePropertyTable() {
+      const t = translations[currentLanguage];
+      const tbody = document.getElementById("property-body");
+      tbody.innerHTML = "";
+      properties.forEach((property, index) => {
+        const row = document.createElement("tr");
+        row.setAttribute("data-checked", "false");
+
+        const title = property.titles[currentLanguage] || property.titles.fr;
+        const description = property.descriptions[currentLanguage] || property.descriptions.fr;
+        const area = property.areas[currentLanguage] || property.areas.fr;
+        const price = property.prices[currentLanguage] || property.prices.fr;
+
+        row.innerHTML = `
+          <td>${index + 1}</td>
+          <td>${title}</td>
+          <td>${title}</td>
+          <td>${description}</td>
+          <td>${area}</td>
+          <td>${price}</td>
+          <td><a href="${property.photo}" target="_blank" rel="noopener">${t.photoText}</a></td>
+          <td><a href="${property.video}" target="_blank" rel="noopener">${t.videoText}</a></td>
+          <td class="validate-cell"></td>
+          <td class="proposal-cell"></td>
+          <td class="cancel-cell"></td>
+        `;
+
+        const validateBtn = document.createElement("button");
+        validateBtn.innerText = t.validate;
+        validateBtn.className = "btn";
+        validateBtn.onclick = () => {
+          row.querySelector(".validate-cell").innerText = row.cells[5].innerText;
+          row.querySelector(".proposal-cell").innerHTML = "";
+          row.querySelector(".cancel-cell").innerHTML = "";
+          row.setAttribute("data-checked", "true");
+        };
+
+        const proposeBtn = document.createElement("button");
+        proposeBtn.innerText = t.propose;
+        proposeBtn.className = "btn";
+        proposeBtn.onclick = () => {
+          const input = document.createElement("input");
+          input.type = "number";
+          input.placeholder = t.propose + " un prix";
+          input.style.width = "120px";
+
+          const sendBtn = document.createElement("button");
+          sendBtn.innerText = t.continue;
+          sendBtn.className = "btn";
+          sendBtn.onclick = () => {
+            const value = input.value;
+            if (!value || isNaN(value)) {
+              alert(t.invalidPrice);
+              return;
+            }
+            row.querySelector(".proposal-cell").innerText = value + " DH";
+            row.querySelector(".validate-cell").innerHTML = "";
+            row.querySelector(".cancel-cell").innerHTML = "";
+            row.setAttribute("data-checked", "true");
+          };
+
+          const proposalCell = row.querySelector(".proposal-cell");
+          proposalCell.innerHTML = "";
+          proposalCell.appendChild(input);
+          proposalCell.appendChild(sendBtn);
+          row.querySelector(".validate-cell").innerHTML = "";
+          row.querySelector(".cancel-cell").innerHTML = "";
+        };
+
+        const cancelBtn = document.createElement("button");
+        cancelBtn.innerText = t.cancel;
+        cancelBtn.className = "btn";
+        cancelBtn.onclick = () => {
+          row.querySelector(".cancel-cell").innerText = t.noDesire;
+          row.querySelector(".validate-cell").innerHTML = "";
+          row.querySelector(".proposal-cell").innerHTML = "";
+          row.setAttribute("data-checked", "true");
+        };
+
+        row.querySelector(".validate-cell").appendChild(validateBtn);
+        row.querySelector(".proposal-cell").appendChild(proposeBtn);
+        row.querySelector(".cancel-cell").appendChild(cancelBtn);
+
+        tbody.appendChild(row);
+      });
+    }
+
+    function saveToPDF() {
+      const t = translations[currentLanguage];
+      const rows = document.querySelectorAll("#property-body tr");
+      for (let row of rows) {
+        if (row.getAttribute("data-checked") !== "true") {
+          alert(t.actionRequired);
+          return;
+        }
+      }
+
+      const nomUtilisateur = document.getElementById("username").value || t.nameLabel + " " + "Non renseigné";
+      const telephoneUtilisateur = document.getElementById("phone").value || t.phoneLabel + " " + "Non renseigné";
+
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      // Date actuelle formatée pour affichage selon langue
+      const date = new Date();
+      const localeForDate = currentLanguage === "ar" ? "ar-EG" : currentLanguage + '-' + currentLanguage.toUpperCase();
+      const dateStr = date.toLocaleDateString(localeForDate, {
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+      });
+
+      // Date/heure pour nom fichier format YYYYMMDD_HHMMSS
+      const pad = (n) => n.toString().padStart(2, "0");
+      const filenameDate = `${date.getFullYear()}${pad(date.getMonth() + 1)}${pad(date.getDate())}_${pad(date.getHours())}${pad(date.getMinutes())}${pad(date.getSeconds())}`;
+      const filename = `Offre_${filenameDate}.pdf`;
+
+      // Titre
+      doc.setFontSize(18);
+      doc.setFont("helvetica", "bold");
+      doc.text(t.summaryTitle, 105, 15, null, null, "center");
+
+      // Infos utilisateur et date
+      doc.setFontSize(11);
+      doc.setFont("helvetica", "normal");
+      doc.text(`${t.dateLabel} ${dateStr}`, 14, 30);
+      doc.text(`${t.nameLabel} ${nomUtilisateur}`, 14, 38);
+      doc.text(`${t.phoneLabel} ${telephoneUtilisateur}`, 14, 46);
+
+      // Préparer les données du tableau
+      const bodyData = [];
+      rows.forEach((row) => {
+        const cells = row.querySelectorAll("td");
+        const bien = cells[1].innerText.trim();
+        const prix = cells[5].innerText.trim();
+
+        // Choix (valider, proposer, annuler)
+        let choix = "";
+        if (cells[8].innerText.trim()) choix = cells[8].innerText.trim();
+        else if (cells[9].innerText.trim()) choix = cells[9].innerText.trim();
+        else if (cells[10].innerText.trim()) choix = cells[10].innerText.trim();
+
+        bodyData.push([bien, prix, choix]);
+      });
+
+      // Générer le tableau avec autoTable
+      doc.autoTable({
+        startY: 55,
+        head: [[t.tableHeaders[1], t.tableHeaders[5], "Choix"]],
+        body: bodyData,
+        styles: { font: "helvetica", fontSize: 10, cellPadding: 3 },
+        headStyles: { fillColor: [41, 128, 185], textColor: 255, fontStyle: "bold" },
+        alternateRowStyles: { fillColor: [240, 240, 240] },
+        margin: { left: 14, right: 14 },
+        columnStyles: {
+          0: { cellWidth: 70 },
+          1: { cellWidth: 40 },
+          2: { cellWidth: 50 },
+        },
+      });
+
+      const lastY = doc.lastAutoTable ? doc.lastAutoTable.finalY + 10 : 100;
+
+      // Texte procédure d'achat traduit
+      const splitText = doc.splitTextToSize(t.purchaseProcedure, 180);
+
+      doc.setFontSize(11);
+      doc.setFont("helvetica", "italic");
+      doc.text(t.purchaseProcedureTitle, 14, lastY - 8);
+      doc.text(splitText, 14, lastY + 5);
+
+      doc.save(filename);
+
+      alert(`${t.pdfSaved} ${filename}`);
+      resetApp();
+    }
+
+    window.addEventListener("load", () => {
+      document.getElementById("language-selection").classList.remove("hidden");
+    });
+  </script>
+</body>
+</html>
+
