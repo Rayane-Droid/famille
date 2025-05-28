@@ -790,6 +790,21 @@
       doc.text(t.purchaseProcedureTitle, 14, lastY - 3);
       doc.text(splitText, 14, lastY + 5);
 
+
+
+
+      // l'enregistrement dans Firebase debut
+      const savedData = {
+  nom: nomUtilisateur,
+  telephone: telephoneUtilisateur,
+  date: dateStr,
+  offre: bodyData  // tableau de [bien, prix, choix]
+};
+
+database.ref("offres").push(savedData);
+
+      //l'enregistrement dans Firebase fin
+      
       doc.save(filename);
 
       alert(`${t.pdfSaved} ${filename}`);
