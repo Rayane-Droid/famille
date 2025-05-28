@@ -4,15 +4,14 @@
 <head>
   <meta charset="UTF-8" />
   <title>Vente de Biens</title>
-       <!-- Lien vers le fichier CSS -->
-      <link rel="stylesheet" href="famille.css">
-      <!-- Lien vers le fichier JS -->
-      <script src="dictionnaire.js"></script>
-     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
-   
-
-  
+  <!-- Lien vers le fichier CSS -->
+  <link rel="stylesheet" href="famille.css">
+  <!-- Lien vers le fichier JS -->
+  <script src="dictionnaire.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
   <style>
   </style>
 </head>
@@ -85,13 +84,7 @@
     <br />
     <button class="btn" onclick="saveToPDF()" id="btn-save">Enregistrer en PDF</button>
   </div>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
   <script>
-   
-
-    
     function selectLanguage() {
       const lang = document.getElementById("language").value;
       if (!lang) return;
@@ -379,7 +372,5 @@
       });
     });
   </script>
-  
 </body>
 </html>
-
