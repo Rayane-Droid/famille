@@ -1,0 +1,79 @@
+
+<!-- historique.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Historique des offres</title>
+  <style>
+    table {
+      width: 90%;
+      margin: 20px auto;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 8px 12px;
+      border: 1px solid #ccc;
+      text-align: left;
+    }
+    th {
+      background-color: #2980b9;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <h2 style="text-align:center;">Historique des Offres Enregistrées</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Nom</th>
+        <th>Téléphone</th>
+        <th>Date</th>
+        <th>Bien</th>
+        <th>Prix</th>
+        <th>Choix</th>
+      </tr>
+    </thead>
+    <tbody id="offersTableBody"></tbody>
+  </table>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBw7Jl0JfEIrwEO-XeJdBBRLc...",
+      authDomain: "botbd-d13b0.firebaseapp.com",
+      databaseURL: "https://botbd-d13b0-default-rtdb.firebaseio.com",
+      projectId: "botbd-d13b0",
+      storageBucket: "botbd-d13b0.appspot.com",
+      messagingSenderId: "313161565166",
+      appId: "1:313161565166:web:a7a5a4e050f5afbcd8c4ff"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    database.ref("offres").on("value", (snapshot) => {
+      const tbody = document.getElementById("offersTableBody");
+      tbody.innerHTML = ""; // Nettoyer
+      snapshot.forEach((child) => {
+        const data = child.val();
+        data.offre.forEach(([bien, prix, choix]) => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${data.nom}</td>
+            <td>${data.telephone}</td>
+            <td>${data.date}</td>
+            <td>${bien}</td>
+            <td>${prix}</td>
+            <td>${choix}</td>
+          `;
+          tbody.appendChild(row);
+        });
+      });
+    });
+  </script>
+</body>
+</html>
