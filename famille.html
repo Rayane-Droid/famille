@@ -229,6 +229,8 @@
     function saveToPDF() {
   const t = translations[currentLanguage];
   const rows = document.querySelectorAll("#property-body tr");
+  
+  // Vérifiez si toutes les lignes ont été validées
   for (let row of rows) {
     if (row.getAttribute("data-checked") !== "true") {
       alert(t.actionRequired);
@@ -239,6 +241,35 @@
   const nomUtilisateur = document.getElementById("username").value || t.nameLabel + " " + "Non renseigné";
   const telephoneUtilisateur = document.getElementById("phone").value || t.phoneLabel + " " + "Non renseigné";
 
+  // Enregistrer les données dans Firebase
+  const data = {
+    nom: nomUtilisateur,
+    telephone: telephoneUtilisateur,
+    date: new Date().toISOString(),
+    biens: []
+  };
+
+  rows.forEach((row) => {
+    const cells = row.querySelectorAll("td");
+    const bien = cells[1].innerText.trim();
+    const prix = cells[5].innerText.trim();
+    const choix = cells[8].innerText.trim() || cells[9].innerText.trim() || cells[10].innerText.trim();
+    
+    data.biens.push([bien, prix, choix]);
+  });
+
+  // Enregistrer les données dans la référence "historique_offres"
+  database.ref("historique_offres").push(data)
+    .then(() => {
+      console.log("Données enregistrées avec succès !");
+      generatePDF(nomUtilisateur, telephoneUtilisateur, rows);
+    })
+    .catch((error) => {
+      console.error("Erreur lors de l'enregistrement des données : ", error);
+    });
+}
+
+function generatePDF(nomUtilisateur, telephoneUtilisateur, rows) {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
 
@@ -321,6 +352,7 @@
   alert(`${t.pdfSaved} ${filename}`);
   resetApp();
 }
+
     
     window.addEventListener("load", () => {
       document.getElementById("language-selection").classList.remove("hidden");
