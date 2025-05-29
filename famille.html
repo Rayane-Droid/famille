@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -68,7 +67,7 @@
       <tbody id="property-body"></tbody>
     </table>
     
-    <!-- Champ de commentaires -->
+<!-- ================================ Champ de commentaires -->
   <div class="input-block">
     <label for="comments">Commentaires :</label>
     <textarea id="comments" rows="4" cols="50" placeholder="Laissez vos commentaires ici..."></textarea>
@@ -229,10 +228,6 @@
   }     
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
-// ================================== Ajoutez votre police arabe
-doc.addFileToVFS("Amiri.ttf", "data:font/ttf;base64,..."); // Remplacez par le contenu base64 de votre police
-doc.addFont("Amiri.ttf", "Amiri", "normal");
-doc.setFont("Amiri"); // Utilisez la police arabe
 // ================================== Date actuelle formatée pour affichage selon langue
   const date = new Date();
   const localeForDate = currentLanguage === "ar" ? "ar-EG" : currentLanguage + '-' + currentLanguage.toUpperCase();
