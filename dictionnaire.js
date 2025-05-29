@@ -1,5 +1,6 @@
 
-const properties = [
+
+	const properties = [
       {
         key: "villa",
         photo: "https://exemple.com/villa-photo.jpg",
@@ -23,7 +24,7 @@ const properties = [
         areas: {
           fr: "350 m²",
           en: "350 sqm",
-          ar: "٣٥٠ متر مربع",
+          ar: "350 متر مربع",
           es: "350 m²",
           de: "350 m²",
           it: "350 m²"
@@ -31,7 +32,7 @@ const properties = [
         prices: {
           fr: "3 000 000 DH",
           en: "3,000,000 DH",
-          ar: "٣٬٠٠٠٬٠٠٠ درهم",
+          ar: "3,000,000 درهم",
           es: "3.000.000 DH",
           de: "3.000.000 DH",
           it: "3.000.000 DH"
@@ -60,7 +61,7 @@ const properties = [
         areas: {
           fr: "50 m²",
           en: "50 sqm",
-          ar: "٥٠ متر مربع",
+          ar: "50 متر مربع",
           es: "50 m²",
           de: "50 m²",
           it: "50 m²"
@@ -68,7 +69,7 @@ const properties = [
         prices: {
           fr: "500 000 DH",
           en: "500,000 DH",
-          ar: "٥٠٠٬٠٠٠ درهم",
+          ar: "500,000 درهم",
           es: "500.000 DH",
           de: "500.000 DH",
           it: "500.000 DH"
@@ -97,7 +98,7 @@ const properties = [
         areas: {
           fr: "1000 m²",
           en: "1000 sqm",
-          ar: "١٠٠٠ متر مربع",
+          ar: "1000 متر مربع",
           es: "1000 m²",
           de: "1000 m²",
           it: "1000 m²"
@@ -105,7 +106,7 @@ const properties = [
         prices: {
           fr: "800 000 DH",
           en: "800,000 DH",
-          ar: "٨٠٠٬٠٠٠ درهم",
+          ar: "800,000 درهم",
           es: "800.000 DH",
           de: "800.000 DH",
           it: "800.000 DH"
@@ -134,7 +135,7 @@ const properties = [
         areas: {
           fr: "750 m²",
           en: "750 sqm",
-          ar: "٧٥٠ متر مربع",
+          ar: "750 متر مربع",
           es: "750 m²",
           de: "750 m²",
           it: "750 m²"
@@ -142,7 +143,7 @@ const properties = [
         prices: {
           fr: "1 200 000 DH",
           en: "1,200,000 DH",
-          ar: "١٬٢٠٠٬٠٠٠ درهم",
+          ar: "1,200,000 درهم",
           es: "1.200.000 DH",
           de: "1.200.000 DH",
           it: "1.200.000 DH"
@@ -171,7 +172,7 @@ const properties = [
         areas: {
           fr: "500 m²",
           en: "500 sqm",
-          ar: "٥٠٠ متر مربع",
+          ar: "500 متر مربع",
           es: "500 m²",
           de: "500 m²",
           it: "500 m²"
@@ -179,7 +180,7 @@ const properties = [
         prices: {
           fr: "2 000 000 DH",
           en: "2,000,000 DH",
-          ar: "٢٬٠٠٠٬٠٠٠ درهم",
+          ar: "2,000,000 درهم",
           es: "2.000.000 DH",
           de: "2.000.000 DH",
           it: "2.000.000 DH"
