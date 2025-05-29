@@ -2,14 +2,16 @@
 .language-menu {
       margin: 15px 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
     }
+
     .language-menu label {
       font-weight: 600;
       margin-right: 10px;
       font-size: 1.1em;
       color: #34495e;
     }
-    .language-menu select {
+ .language-menu select {
       padding: 8px 12px;
       border-radius: 6px;
       border: 1.8px solid #2980b9;
@@ -18,13 +20,15 @@
       color: #2c3e50;
       cursor: pointer;
       transition: border-color 0.3s ease, box-shadow 0.3s ease;
+
     }
-    .language-menu select:hover,
+   .language-menu select:hover,
     .language-menu select:focus {
       border-color: #3498db;
       box-shadow: 0 0 8px rgba(52, 152, 219, 0.6);
       outline: none;
     }
+
     body {
       font-family: Arial, sans-serif;
       margin: 0;
@@ -32,12 +36,14 @@
       background: #f4f4f9;
       color: #333;
     }
-    h2 {
+h2 {
       color: #444;
     }
+
     .hidden {
       display: none;
     }
+
     .btn {
       padding: 8px 16px;
       background-color: #4caf50;
@@ -49,7 +55,7 @@
       font-weight: 600;
       transition: background-color 0.3s ease;
     }
-    .btn:hover {
+ .btn:hover {
       background-color: #45a049;
     }
     table {
@@ -61,28 +67,32 @@
       border-radius: 8px;
       overflow: hidden;
     }
-    th, td {
+th, td {
       border: 1px solid #ccc;
       padding: 12px 10px;
       text-align: center;
       font-size: 0.95em;
     }
+
     th {
       background-color: #2980b9;
       color: #fff;
       font-weight: 700;
       text-transform: uppercase;
     }
+
     .input-block {
       margin-bottom: 20px;
     }
-    .input-block label {
+
+   .input-block label {
       font-weight: 600;
       display: block;
       margin-bottom: 6px;
       font-size: 1.1em;
       color: #34495e;
     }
+
     .input-block input {
       padding: 8px 10px;
       width: 100%;
@@ -92,8 +102,18 @@
       font-size: 1em;
       transition: border-color 0.3s ease;
     }
-    .input-block input:focus {
+
+  .input-block input:focus {
       border-color: #3498db;
       outline: none;
       box-shadow: 0 0 6px rgba(52, 152, 219, 0.6);
     }
+
+@media (max-width: 600px) {
+  body {
+    font-size: 14px; /* Ajustez la taille de la police pour les petits écrans */
+  }
+  .input-block {
+    width: 100%; /* Rendre les blocs d'entrée pleine largeur */
+  }
+}
