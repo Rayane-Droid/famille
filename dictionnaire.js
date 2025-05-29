@@ -187,7 +187,7 @@ const properties = [
       }
     ];
 
-    let currentLanguage = "fr";
+let currentLanguage = "fr";
 
     const translations = {
       fr: {
@@ -388,4 +388,4 @@ const properties = [
         photoText: "Foto",
         videoText: "Video"
       }
-    };
+    };  
