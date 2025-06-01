@@ -57,9 +57,9 @@
           <th scope="col">Description</th>
           <th scope="col">Superficie</th>
           <th scope="col">Prix</th>
-          <!--  
+          <!--  -->
           <th scope="col">Photo</th>
-          <th scope="col">Vidéo</th>-->
+          <th scope="col">Vidéo</th>
           <th scope="col">Valider</th>
           <th scope="col">Proposition</th>
           <th scope="col">Annuler</th>
@@ -145,12 +145,15 @@
         const row = document.createElement("tr");
         row.setAttribute("data-checked", "false");
         const title = property.titles[currentLanguage] || property.titles.fr;
+        
+        const key = property.keys[currentLanguage] || property.keys.fr;
+        
         const description = property.descriptions[currentLanguage] || property.descriptions.fr;
         const area = property.areas[currentLanguage] || property.areas.fr;
         const price = property.prices[currentLanguage] || property.prices.fr;
         row.innerHTML = `
           <td>${index + 1}</td>
-          <td>${title}</td>
+          <td>${key}</td>
           <td>${title}</td>
           <td>${description}</td>
           <td>${area}</td>
