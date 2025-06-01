@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Instructions multilingues</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 30px;
+      background-color: #f4f4f4;
+      direction: ltr;
+    }
+    select {
+      padding: 5px;
+      font-size: 16px;
+    }
+    #instructions {
+      background-color: #fff;
+      padding: 20px;
+      margin-top: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Sélectionnez votre langue / Select your language</h2>
+  <select id="langSelect" onchange="updateText()">
+    <option value="fr">Français 🇫🇷</option>
+    <option value="en">English 🇬🇧</option>
+    <option value="es">Español 🇪🇸</option>
+    <option value="al">Deutsch 🇩🇪</option>
+    <option value="it">Italiano 🇮🇹</option>
+    <option value="ar">العربية 🇸🇦</option>
+  </select>
+
+  <div id="instructions"></div>
+
+  <script>
+    const textes = {
+      fr: `
+        <h3>Instructions :</h3>
+        <p>Si vous êtes intéressé par l'achat de l'un de nos biens, veuillez suivre les étapes ci-dessous :</p>
+        <ul>
+          <li>Choisissez votre langue.</li>
+          <li>Saisissez votre nom et un numéro de téléphone valide.</li>
+          <li>Sélectionnez les biens disponibles dans le tableau à choix multiples.</li>
+          <li>Pour chaque bien sélectionné, vous pouvez :</li>
+          <ul>
+            <li>Valider le prix proposé par nos soins.</li>
+            <li>Proposer votre propre prix pour ce bien.</li>
+            <li>Annuler si le bien ne vous intéresse pas.</li>
+          </ul>
+        </ul>
+      `,
+      en: `
+        <h3>Instructions:</h3>
+        <p>If you are interested in purchasing one of our properties, please follow the steps below:</p>
+        <ul>
+          <li>Choose your language.</li>
+          <li>Enter your name and a valid phone number.</li>
+          <li>Select available properties in the multiple-choice table.</li>
+          <li>For each selected property, you can:</li>
+          <ul>
+            <li>Accept the price proposed by us.</li>
+            <li>Offer your own price for the property.</li>
+            <li>Cancel if you're not interested.</li>
+          </ul>
+        </ul>
+      `,
+      es: `
+        <h3>Instrucciones:</h3>
+        <p>Si está interesado en comprar una de nuestras propiedades, siga los siguientes pasos:</p>
+        <ul>
+          <li>Elija su idioma.</li>
+          <li>Ingrese su nombre y un número de teléfono válido.</li>
+          <li>Seleccione las propiedades disponibles en la tabla de selección múltiple.</li>
+          <li>Para cada propiedad seleccionada, puede:</li>
+          <ul>
+            <li>Aceptar el precio propuesto por nosotros.</li>
+            <li>Proponer su propio precio para la propiedad.</li>
+            <li>Cancelar si no está interesado.</li>
+          </ul>
+        </ul>
+      `,
+      al: `
+        <h3>Anleitung:</h3>
+        <p>Wenn Sie am Kauf einer unserer Immobilien interessiert sind, folgen Sie bitte diesen Schritten:</p>
+        <ul>
+          <li>Wählen Sie Ihre Sprache aus.</li>
+          <li>Geben Sie Ihren Namen und eine gültige Telefonnummer ein.</li>
+          <li>Wählen Sie verfügbare Immobilien in der Mehrfachauswahl-Tabelle aus.</li>
+          <li>Für jede ausgewählte Immobilie können Sie:</li>
+          <ul>
+            <li>Den vorgeschlagenen Preis akzeptieren.</li>
+            <li>Ihren eigenen Preis vorschlagen.</li>
+            <li>Stornieren, wenn Sie nicht interessiert sind.</li>
+          </ul>
+        </ul>
+      `,
+      it: `
+        <h3>Istruzioni:</h3>
+        <p>Se sei interessato all'acquisto di uno dei nostri immobili, segui questi passaggi:</p>
+        <ul>
+          <li>Scegli la tua lingua.</li>
+          <li>Inserisci il tuo nome e un numero di telefono valido.</li>
+          <li>Seleziona gli immobili disponibili nella tabella a scelta multipla.</li>
+          <li>Per ogni immobile selezionato puoi:</li>
+          <ul>
+            <li>Accettare il prezzo proposto da noi.</li>
+            <li>Proporre il tuo prezzo per l'immobile.</li>
+            <li>Annullare se non sei interessato.</li>
+          </ul>
+        </ul>
+      `,
+      ar: `
+        <h3>التعليمات:</h3>
+        <p>إذا كنت مهتمًا بشراء أحد ممتلكاتنا، يرجى اتباع الخطوات التالية:</p>
+        <ul>
+          <li>اختر لغتك.</li>
+          <li>أدخل اسمك ورقم هاتف صالح.</li>
+          <li>اختر الممتلكات المتاحة في جدول متعدد الخيارات.</li>
+          <li>بالنسبة لكل ممتلك تم اختياره، يمكنك:</li>
+          <ul>
+            <li>تأكيد السعر المقترح من قبلنا.</li>
+            <li>اقتراح السعر الذي تريده.</li>
+            <li>إلغاء إذا لم تكن مهتمًا.</li>
+          </ul>
+        </ul>
+      `
+    };
+
+    function updateText() {
+      const lang = document.getElementById('langSelect').value;
+      document.body.style.direction = (lang === 'ar') ? 'rtl' : 'ltr';
+      document.getElementById('instructions').innerHTML = textes[lang];
+    }
+
+    // Afficher le texte par défaut en français
+    window.onload = updateText;
+  </script>
+
+</body>
+</html>
