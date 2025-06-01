@@ -49,3 +49,173 @@ row.innerHTML = `
           <td class="proposal-cell"></td>
           <td class="cancel-cell"></td>
         `;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // ================================== 
+    function saveToPDF() {
+      const t = translations[currentLanguage];
+      const rows = document.querySelectorAll("#property-body tr");
+      for (let row of rows) {
+        if (row.getAttribute("data-checked") !== "true") {
+          alert(t.actionRequired);
+          return;
+        }
+      }
+      const nomUtilisateur = document.getElementById("username").value || t.nameLabel + " " + "Non renseigné";
+      const telephoneUtilisateur = document.getElementById("phone").value || t.phoneLabel + " " + "Non renseigné";
+      const commentaires = document.getElementById("comments").value || "Aucun commentaire";
+      // ================================== Vérifiez la longueur des commentaires
+      if (commentaires.length > 300) {
+        alert("Les commentaires ne doivent pas dépasser 300 caractères...");
+        return;
+      }
+      const {
+        jsPDF
+      } = window.jspdf;
+      const doc = new jsPDF();
+      // ================================== 
+      
+      doc.setFont("helvetica"); // Police intégrée qui marche dans tous les navigateurs
+
+      
+      // ================================== Date actuelle formatée pour affichage selon langue
+      const date = new Date();
+      const localeForDate = currentLanguage === "ar" ? "ar-EG" : currentLanguage + '-' + currentLanguage.toUpperCase();
+      const dateStr = date.toLocaleDateString(localeForDate, {
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+      });
+      // ================================== Date/heure pour nom fichier format YYYYMMDD_HHMMSS
+      const pad = (n) => n.toString().padStart(2, "0");
+      const filenameDate = `${date.getFullYear()}${pad(date.getMonth() + 1)}${pad(date.getDate())}_${pad(date.getHours())}${pad(date.getMinutes())}${pad(date.getSeconds())}`;
+      const filename = `Offre_${filenameDate}.pdf`;
+      // ================================== Titre
+      doc.setFontSize(18);
+      doc.setFont("helvetica", "bold");
+      doc.text(t.summaryTitle, 105, 15, null, null, "center");
+      // ================================== Infos utilisateur et date
+      doc.setFontSize(11);
+      doc.setFont("helvetica", "normal");
+      doc.text(`${t.dateLabel} ${dateStr}`, 14, 30);
+      doc.text(`${t.nameLabel} ${nomUtilisateur}`, 14, 38);
+      doc.text(`${t.phoneLabel} ${telephoneUtilisateur}`, 14, 46);
+      // ================================== Préparer les données du tableau
+      const bodyData = [];
+      rows.forEach((row) => {
+        const cells = row.querySelectorAll("td");
+        const bien = cells[1].innerText.trim();
+        const titre = cells[2].innerText.trim();
+        const description = cells[3].innerText.trim();
+        const superficie = cells[4].innerText.trim();
+        const prix = cells[5].innerText.trim();
+        // ================================== Choix (valider, proposer, annuler)
+        let choix = "";
+        if (cells[8].innerText.trim()) choix = cells[8].innerText.trim();
+        else if (cells[9].innerText.trim()) choix = cells[9].innerText.trim();
+        else if (cells[10].innerText.trim()) choix = cells[10].innerText.trim();
+        bodyData.push([bien, titre, description, superficie, prix, choix]);
+      });
+      // ================================== Générer le tableau avec autoTable
+      doc.autoTable({
+        startY: 55,
+        head: [
+          [t.tableHeaders[1], t.tableHeaders[2], t.tableHeaders[3], t.tableHeaders[4], t.tableHeaders[5], "Choix"]
+        ],
+        body: bodyData,
+        styles: {
+          font: "helvetica",
+          fontSize: 10,
+          cellPadding: 3
+        },
+        headStyles: {
+          fillColor: [41, 128, 185],
+          textColor: 255,
+          fontStyle: "bold"
+        },
+        alternateRowStyles: {
+          fillColor: [240, 240, 240]
+        },
+        margin: {
+          left: 14,
+          right: 14
+        },
+        columnStyles: {
+          0: {
+            cellWidth: 30
+          },
+          1: {
+            cellWidth: 30
+          },
+          2: {
+            cellWidth: 30
+          },
+          3: {
+            cellWidth: 25
+          },
+          4: {
+            cellWidth: 30
+          },
+          5: {
+            cellWidth: 30
+          },
+        },
+      });
+      const lastY = doc.lastAutoTable ? doc.lastAutoTable.finalY + 10 : 100;
+      // ================================== Ajout des commentaires au PDF
+      doc.setFontSize(11);
+      doc.setFont("helvetica", "normal");
+      // ================================== Titre des commentaires
+      const commentsTitleYPosition = lastY - 3; // Position pour le titre
+      doc.text("Commentaires:", 14, commentsTitleYPosition);
+      // ================================== Position pour les commentaires
+      const commentsYPosition = commentsTitleYPosition + 7; // Position pour les commentaires
+      const marginRight = 14; // Marge droite
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const textWidth = doc.getTextDimensions(commentaires).w;
+      // ================================== Vérifiez si le texte dépasse la marge droite
+      if (textWidth + marginRight > pageWidth) {
+        // Si le texte dépasse, utilisez splitTextToSize pour gérer le débordement
+        const splitComments = doc.splitTextToSize(commentaires, pageWidth - 39); // 14px de chaque côté pour les marges
+        doc.text(splitComments, 14, commentsYPosition);
+      } else {
+        doc.text(commentaires, 14, commentsYPosition);
+      }
+      // ================================== Texte procédure d'achat traduit
+      const splitText = doc.splitTextToSize(t.purchaseProcedure, 180);
+      doc.setFontSize(11);
+      doc.setFont("helvetica", "italic");
+      doc.text(t.purchaseProcedureTitle, 14, lastY + 65);
+      doc.text(splitText, 14, lastY + 72);
+      doc.save(filename);
+      alert(`${t.pdfSaved} ${filename}`);
+      resetApp();
+    }
+    // ================================== 
+    window.addEventListener("load", () => {
+      document.getElementById("language-selection").classList.remove("hidden");
+    });
+  </script>
+
+
