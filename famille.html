@@ -135,101 +135,83 @@
     }
     // ================================== 
     function generatePropertyTable() {
-  const t = translations[currentLanguage];
-  const tbody = document.getElementById("property-body");
-  tbody.innerHTML = "";
-
-  properties.forEach((property, index) => {
-    const row = document.createElement("tr");
-    row.setAttribute("data-checked", "false");
-
-    // Récupération des textes avec fallback vers le français
-    const getText = (obj) => obj[currentLanguage] || obj["fr"] || "";
-
-    // Création des cellules statiques
-    row.innerHTML = `
-      <td>${index + 1}</td>
-      <td>${getText(property.keys)}</td>
-      <td>${getText(property.titles)}</td>
-      <td>${getText(property.descriptions)}</td>
-      <td>${getText(property.areas)}</td>
-      <td>${getText(property.prices)}</td>
-      <td><a href="${property.photo}" target="_blank" rel="noopener">${t.photoText}</a></td>
-      <td><a href="${property.video}" target="_blank" rel="noopener">${t.videoText}</a></td>
-      <td class="validate-cell"></td>
-      <td class="proposal-cell"></td>
-      <td class="cancel-cell"></td>
-    `;
-
-    // === Bouton Valider
-    const validateBtn = document.createElement("button");
-    validateBtn.innerText = t.validate;
-    validateBtn.className = "btn";
-    validateBtn.onclick = () => {
-      clearActionCells(row);
-      row.querySelector(".validate-cell").innerText = getText(property.prices);
-      row.setAttribute("data-checked", "true");
-    };
-
-    // === Bouton Proposer
-    const proposeBtn = document.createElement("button");
-    proposeBtn.innerText = t.propose;
-    proposeBtn.className = "btn";
-    proposeBtn.onclick = () => {
-      clearActionCells(row);
-      const input = document.createElement("input");
-      input.type = "number";
-      input.placeholder = t.propose + " un prix";
-      input.style.width = "120px";
-
-      const sendBtn = document.createElement("button");
-      sendBtn.innerText = t.continue;
-      sendBtn.className = "btn";
-      sendBtn.onclick = () => {
-        const value = input.value.trim();
-        if (!value || isNaN(value)) {
-          alert(t.invalidPrice);
-          return;
-        }
-        row.querySelector(".proposal-cell").innerText = value + " DH";
-        row.setAttribute("data-checked", "true");
-      };
-
-      const cell = row.querySelector(".proposal-cell");
-      cell.innerHTML = "";
-      cell.appendChild(input);
-      cell.appendChild(sendBtn);
-    };
-
-    // === Bouton Annuler
-    const cancelBtn = document.createElement("button");
-    cancelBtn.innerText = t.cancel;
-    cancelBtn.className = "btn";
-    cancelBtn.onclick = () => {
-      clearActionCells(row);
-      row.querySelector(".cancel-cell").innerText = t.noDesire;
-      row.setAttribute("data-checked", "true");
-    };
-
-    // Insertion des boutons dans les cellules
-    row.querySelector(".validate-cell").appendChild(validateBtn);
-    row.querySelector(".proposal-cell").appendChild(proposeBtn);
-    row.querySelector(".cancel-cell").appendChild(cancelBtn);
-
-    tbody.appendChild(row);
-  });
-}
-
-// ✅ Fonction utilitaire pour réinitialiser les cellules d’action
-function clearActionCells(row) {
-  row.querySelector(".validate-cell").innerHTML = "";
-  row.querySelector(".proposal-cell").innerHTML = "";
-  row.querySelector(".cancel-cell").innerHTML = "";
-}
-
-        
-
-    
+      const t = translations[currentLanguage];
+      const tbody = document.getElementById("property-body");
+      tbody.innerHTML = "";
+      properties.forEach((property, index) => {
+        const row = document.createElement("tr");
+        row.setAttribute("data-checked", "false");
+        const key = property.keys[currentLanguage] || property.keys.fr;
+        const title = property.titles[currentLanguage] || property.titles.fr;
+        const description = property.descriptions[currentLanguage] || property.descriptions.fr;
+        const area = property.areas[currentLanguage] || property.areas.fr;
+        const price = property.prices[currentLanguage] || property.prices.fr;
+        row.innerHTML = `
+          <td>${index + 1}</td>
+          <td>${key}</td>
+          <td>${title}</td>
+          <td>${description}</td>
+          <td>${area}</td>
+          <td>${price}</td>
+          <td><a href="${property.photo}" target="_blank" rel="noopener">${t.photoText}</a></td>
+          <td><a href="${property.video}" target="_blank" rel="noopener">${t.videoText}</a></td>
+          <td class="validate-cell"></td>
+          <td class="proposal-cell"></td>
+          <td class="cancel-cell"></td>
+        `;
+        const validateBtn = document.createElement("button");
+        validateBtn.innerText = t.validate;
+        validateBtn.className = "btn";
+        validateBtn.onclick = () => {
+          row.querySelector(".validate-cell").innerText = row.cells[5].innerText;
+          row.querySelector(".proposal-cell").innerHTML = "";
+          row.querySelector(".cancel-cell").innerHTML = "";
+          row.setAttribute("data-checked", "true");
+        };
+        const proposeBtn = document.createElement("button");
+        proposeBtn.innerText = t.propose;
+        proposeBtn.className = "btn";
+        proposeBtn.onclick = () => {
+          const input = document.createElement("input");
+          input.type = "number";
+          input.placeholder = t.propose + " un prix";
+          input.style.width = "120px";
+          const sendBtn = document.createElement("button");
+          sendBtn.innerText = t.continue;
+          sendBtn.className = "btn";
+          sendBtn.onclick = () => {
+            const value = input.value;
+            if (!value || isNaN(value)) {
+              alert(t.invalidPrice);
+              return;
+            }
+            row.querySelector(".proposal-cell").innerText = value + " DH";
+            row.querySelector(".validate-cell").innerHTML = "";
+            row.querySelector(".cancel-cell").innerHTML = "";
+            row.setAttribute("data-checked", "true");
+          };
+          const proposalCell = row.querySelector(".proposal-cell");
+          proposalCell.innerHTML = "";
+          proposalCell.appendChild(input);
+          proposalCell.appendChild(sendBtn);
+          row.querySelector(".validate-cell").innerHTML = "";
+          row.querySelector(".cancel-cell").innerHTML = "";
+        };
+        const cancelBtn = document.createElement("button");
+        cancelBtn.innerText = t.cancel;
+        cancelBtn.className = "btn";
+        cancelBtn.onclick = () => {
+          row.querySelector(".cancel-cell").innerText = t.noDesire;
+          row.querySelector(".validate-cell").innerHTML = "";
+          row.querySelector(".proposal-cell").innerHTML = "";
+          row.setAttribute("data-checked", "true");
+        };
+        row.querySelector(".validate-cell").appendChild(validateBtn);
+        row.querySelector(".proposal-cell").appendChild(proposeBtn);
+        row.querySelector(".cancel-cell").appendChild(cancelBtn);
+        tbody.appendChild(row);
+      });
+    }
     // ================================== 
     function saveToPDF() {
       const t = translations[currentLanguage];
