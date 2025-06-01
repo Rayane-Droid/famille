@@ -1,0 +1,23 @@
+row.innerHTML = `
+          <td>${index + 1}</td>
+          <td>${key}</td>
+      
+     //    <td>${title}</td>
+   //      <td>${description}</td>
+      //    <td>${area}</td>
+      
+          <td>${price}</td>
+      
+
+
+//<td><a href="${property.photo}" target="_blank" rel="noopener">${t.photoText}</a></td>
+  //  <td><a href="${property.video}" target="_blank" rel="noopener">${t.videoText}</a></td>
+         
+          
+
+    
+          
+          <td class="validate-cell"></td>
+          <td class="proposal-cell"></td>
+          <td class="cancel-cell"></td>
+        `;
