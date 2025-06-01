@@ -9,24 +9,24 @@
 		  "de": "Villa",
 		  "it": "Villa",
 		},
-        photo: "https://exemple.com/villa-photo.jpg",
-        video: "https://exemple.com/villa-video.mp4",
-        titles: {
-          fr: "Belle Villa moderne",
-          en: "Beautiful Modern Villa",
-          ar: "فيلا جميلة وحديثة",
-          es: "Hermosa villa moderna",
-          de: "Schöne moderne Villa",
-          it: "Bella villa moderna"
-        },
-        descriptions: {
-          fr: "Grande villa avec piscine et jardin.",
-          en: "Large villa with pool and garden.",
-          ar: "فيلا كبيرة مع مسبح وحديقة.",
-          es: "Amplia villa con piscina y jardín.",
-          de: "Große Villa mit Pool und Garten.",
-          it: "Grande villa con piscina e giardino."
-        },
+     //   photo: "https://exemple.com/villa-photo.jpg",
+     //   video: "https://exemple.com/villa-video.mp4",
+    //    titles: {
+     //     fr: "Belle Villa moderne",
+       //   en: "Beautiful Modern Villa",
+      //    ar: "فيلا جميلة وحديثة",
+       //   es: "Hermosa villa moderna",
+     //     de: "Schöne moderne Villa",
+       //   it: "Bella villa moderna"
+     //   },
+     //   descriptions: {
+     //     fr: "Grande villa avec piscine et jardin.",
+     //     en: "Large villa with pool and garden.",
+      //    ar: "فيلا كبيرة مع مسبح وحديقة.",
+      //    es: "Amplia villa con piscina y jardín.",
+       //   de: "Große Villa mit Pool und Garten.",
+       //   it: "Grande villa con piscina e giardino."
+     //   },
         areas: {
           fr: "350 m²",
           en: "350 sqm",
