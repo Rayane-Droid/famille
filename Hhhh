@@ -1,76 +1,3 @@
-<thead>
-        <tr>
-          <th scope="col">N°</th>
-          <th scope="col">Bien</th>
-      <!--      <th scope="col">Titre</th>
-          <th scope="col">Description</th>-->
-          <th scope="col">Superficie</th> 
-          <th scope="col">Prix</th>
-          <!--  
-          <th scope="col">Photo</th>
-          <th scope="col">Vidéo</th> -->
-          <th scope="col">Valider</th>
-          <th scope="col">Proposition</th>
-          <th scope="col">Annuler</th>
-        </tr>
-      </thead>
-
-
-
-
-
-
-
-
-
-
-
-
-row.innerHTML = `
-          <td>${index + 1}</td>
-          <td>${key}</td>
-      
-     //    <td>${title}</td>
-   //      <td>${description}</td>
-      //    <td>${area}</td>
-      
-          <td>${price}</td>
-      
-
-
-//<td><a href="${property.photo}" target="_blank" rel="noopener">${t.photoText}</a></td>
-  //  <td><a href="${property.video}" target="_blank" rel="noopener">${t.videoText}</a></td>
-         
-          
-
-    
-          
-          <td class="validate-cell"></td>
-          <td class="proposal-cell"></td>
-          <td class="cancel-cell"></td>
-        `;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     // ================================== 
     function saveToPDF() {
@@ -94,11 +21,6 @@ row.innerHTML = `
         jsPDF
       } = window.jspdf;
       const doc = new jsPDF();
-      // ================================== 
-      
-      doc.setFont("helvetica"); // Police intégrée qui marche dans tous les navigateurs
-
-      
       // ================================== Date actuelle formatée pour affichage selon langue
       const date = new Date();
       const localeForDate = currentLanguage === "ar" ? "ar-EG" : currentLanguage + '-' + currentLanguage.toUpperCase();
@@ -118,30 +40,28 @@ row.innerHTML = `
       // ================================== Infos utilisateur et date
       doc.setFontSize(11);
       doc.setFont("helvetica", "normal");
-      doc.text(`${t.dateLabel} ${dateStr}`, 14, 30);
-      doc.text(`${t.nameLabel} ${nomUtilisateur}`, 14, 38);
-      doc.text(`${t.phoneLabel} ${telephoneUtilisateur}`, 14, 46);
+      doc.text(` ${t.dateLabel} ${dateStr}`, 14, 30);
+      doc.text(` ${t.nameLabel} ${nomUtilisateur}`, 14, 38);
+      doc.text(` ${t.phoneLabel} ${telephoneUtilisateur}`, 14, 46);
       // ================================== Préparer les données du tableau
       const bodyData = [];
       rows.forEach((row) => {
         const cells = row.querySelectorAll("td");
         const bien = cells[1].innerText.trim();
-        const titre = cells[2].innerText.trim();
-        const description = cells[3].innerText.trim();
-        const superficie = cells[4].innerText.trim();
-        const prix = cells[5].innerText.trim();
+        const superficie = cells[2].innerText.trim();
+        const prix = cells[3].innerText.trim();
         // ================================== Choix (valider, proposer, annuler)
         let choix = "";
-        if (cells[8].innerText.trim()) choix = cells[8].innerText.trim();
-        else if (cells[9].innerText.trim()) choix = cells[9].innerText.trim();
-        else if (cells[10].innerText.trim()) choix = cells[10].innerText.trim();
-        bodyData.push([bien, titre, description, superficie, prix, choix]);
+        if (cells[4].innerText.trim()) choix = cells[4].innerText.trim();
+        else if (cells[5].innerText.trim()) choix = cells[5].innerText.trim();
+        else if (cells[6].innerText.trim()) choix = cells[6].innerText.trim();
+        bodyData.push([bien, superficie, prix, choix]);
       });
       // ================================== Générer le tableau avec autoTable
       doc.autoTable({
         startY: 55,
         head: [
-          [t.tableHeaders[1], t.tableHeaders[2], t.tableHeaders[3], t.tableHeaders[4], t.tableHeaders[5], "Choix"]
+          [t.tableHeaders[1], t.tableHeaders[2], t.tableHeaders[3], "Choix"]
         ],
         body: bodyData,
         styles: {
@@ -163,24 +83,21 @@ row.innerHTML = `
         },
         columnStyles: {
           0: {
-            cellWidth: 30
-          },
-          1: {
-            cellWidth: 30
-          },
-          2: {
-            cellWidth: 30
-          },
-          3: {
             cellWidth: 25
           },
+          1: {
+            cellWidth: 25
+          },
+          2: {
+            cellWidth: 35
+          },
+          3: {
+            cellWidth: 45
+          },
           4: {
-            cellWidth: 30
-          },
-          5: {
-            cellWidth: 30
-          },
-        },
+            cellWidth: 25
+          }
+        }
       });
       const lastY = doc.lastAutoTable ? doc.lastAutoTable.finalY + 10 : 100;
       // ================================== Ajout des commentaires au PDF
@@ -208,6 +125,16 @@ row.innerHTML = `
       doc.setFont("helvetica", "italic");
       doc.text(t.purchaseProcedureTitle, 14, lastY + 65);
       doc.text(splitText, 14, lastY + 72);
+      // ===================== pied de page 
+      const pageCount = doc.internal.getNumberOfPages();
+      for (let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.setFontSize(8);
+        doc.text(`Page ${i} / ${pageCount}`, pageWidth - marginRight, doc.internal.pageSize.getHeight() - 10, {
+          align: "right"
+        });
+      }
+      //======
       doc.save(filename);
       alert(`${t.pdfSaved} ${filename}`);
       resetApp();
@@ -217,5 +144,6 @@ row.innerHTML = `
       document.getElementById("language-selection").classList.remove("hidden");
     });
   </script>
+</body>
 
-
+</html>
