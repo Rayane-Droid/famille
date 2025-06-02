@@ -6,5 +6,18 @@
     jsPDF.API.addFont("Amiri-Regular.ttf", "Amiri", "bold");
 
       
-      
+      // Injecte dynamiquement la police dans le document
+const fontStyle = document.createElement("style");
+fontStyle.innerHTML = `
+@font-face {
+  font-family: 'Amiri';
+  src: url('${amiriBase64}') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+body {
+  font-family: 'Amiri', serif;
+}
+`;
+document.head.appendChild(fontStyle);
       
